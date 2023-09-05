@@ -100,7 +100,6 @@ i {  vertical-align: middle; }
 
 .chat
 {
-  max-height: 80vh;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -296,10 +295,9 @@ input:focus{
 }
 .chats{
 
-  overflow-y: scroll;
+  overflow-x: scroll;
   overflow-x: hidden;
   background: #ECEFF1;
-  max-height: 80vh;
   position: relative;
   top: 35px;
 }
