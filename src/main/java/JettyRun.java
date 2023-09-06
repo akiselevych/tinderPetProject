@@ -1,8 +1,13 @@
 import controller.*;
+import dao.LocalMemoUsersDao;
+import dao.UsersDao;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import services.LocalMemoUsersService;
+import services.UsersService;
 
 /**
  * Hello world!
@@ -16,13 +21,19 @@ public class JettyRun
 
         TemplateEngine templateEngine = new TemplateEngine();
 
-        ServletContextHandler handler = new ServletContextHandler();
+        UsersDao usersDao = new LocalMemoUsersDao();
+        UsersService usersService = new LocalMemoUsersService(usersDao);
 
+        ServletContextHandler handler = new ServletContextHandler();
+        SessionHandler sessionHandler = new SessionHandler();
+        handler.setSessionHandler(sessionHandler);
         IndexServlet indexServlet = new IndexServlet(templateEngine);
-        UsersServlet usersServlet = new UsersServlet(templateEngine);
+        UsersServlet usersServlet = new UsersServlet(templateEngine, usersService);
+        LikedUsersServlet likedUsersServlet = new LikedUsersServlet(templateEngine, usersService);
 
         handler.addServlet(new ServletHolder(indexServlet), "/");
         handler.addServlet(new ServletHolder(usersServlet), "/users");
+        handler.addServlet(new ServletHolder(likedUsersServlet), "/liked");
 
         handler.addServlet(CSSBootstrapServlet.class, "/css/bootstrap.min.css");
         handler.addServlet(JsBootstrapServlet.class, "/js/bootstrap.min.css");

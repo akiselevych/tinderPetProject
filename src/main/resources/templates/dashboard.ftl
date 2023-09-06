@@ -9,5 +9,7 @@
 </head>
 <body>
 <a href="/users">Go to users</a>
+<br>
+<a href="/liked">Go to users which you liked</a>
 </body>
 </html>
