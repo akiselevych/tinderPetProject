@@ -9,11 +9,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class LocalMemoUsersDao implements UsersDao {
-    private List<User> users = List.of(
-            new User(1L, "Polinka Lyubimka", "http://andreeanati.com/wp-content/uploads/2020/09/Mob-Journal-Prom-2.jpg"),
-            new User(2L, "Polinka Kyslytska", "http://andreeanati.com/wp-content/uploads/2020/09/Mob-Journal-Prom-4.jpg"),
-            new SessionUser(3L, "Anton Kiselevych", "https://avatars.githubusercontent.com/u/140167030?v=4?s=400", 99)
-    );
+    private List<User> users = List.of();
 
     @Override
     public List<User> findAll() {
@@ -31,7 +27,7 @@ public class LocalMemoUsersDao implements UsersDao {
     }
 
     @Override
-    public List<User> findAllLikedUsers(int sessionId) {
+    public List<User> findAllLikedUsers(Long sessionId) {
         try {
             return getSessionUser(sessionId).getLikedUsers();
         } catch (AccountNotFoundException e) {
@@ -41,7 +37,7 @@ public class LocalMemoUsersDao implements UsersDao {
     }
 
     @Override
-    public SessionUser getSessionUser(int sessionId) throws AccountNotFoundException {
+    public SessionUser getSessionUser(Long sessionId) throws AccountNotFoundException {
         Optional<User> sessionUser = this.users.stream().filter(u -> u instanceof SessionUser).filter(u -> ((SessionUser) u).getSessionId() == sessionId).findAny();
         if (sessionUser.isPresent()) {
             return (SessionUser) sessionUser.get();
@@ -51,7 +47,7 @@ public class LocalMemoUsersDao implements UsersDao {
     }
 
     @Override
-    public void addLikedProfileToLikedUserList(int sessionId, User user) {
+    public void addLikedProfileToLikedUserList(Long sessionId, User user) {
         try {
             getSessionUser(sessionId).addLikedUser(user);
         } catch (AccountNotFoundException e) {

@@ -4,14 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class User {
-    private Long id;
+    private Integer id;
     private String name;
     private String avatarUrl;
+    private String gender;
 
-    public User(Long id,String name, String avatarUrl) {
+    public User(Integer id,String name, String avatarUrl,String gender) {
         this.id = id;
         this.name = name;
         this.avatarUrl = avatarUrl;
+        this.gender = gender;
     }
 
     public String getName() {
@@ -30,11 +32,11 @@ public class User {
         this.avatarUrl = avatarUrl;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

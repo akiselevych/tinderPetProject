@@ -32,19 +32,11 @@ public class UsersServlet extends HttpServlet {
         HttpSession session = req.getSession(false);
         Long showingUserId = Converting.convertToLong(session.getAttribute("showingUserId"));
         try {
-            SessionUser sessionUser = null;
-            if (usersService.findById(showingUserId) instanceof SessionUser){
-                sessionUser = (SessionUser) usersService.findById(showingUserId);
-            }
             User showingUser = usersService.findById(showingUserId);
             if (req.getParameter("option").equals("like")) {
-                usersService.addLikedProfileToLikedUserList((int) session.getAttribute("session-id"), showingUser);
+                usersService.addLikedProfileToLikedUserList(4L, showingUser);
             }
-            if (sessionUser != null && sessionUser.equals(showingUser)) {
-                session.setAttribute("showingUserId", showingUserId + 2);
-            } else {
-                session.setAttribute("showingUserId", showingUserId + 1);
-            }
+            session.setAttribute("showingUserId", showingUserId + 1);
             resp.sendRedirect("/users");
         } catch (AccountNotFoundException e) {
             e.printStackTrace();
@@ -58,14 +50,13 @@ public class UsersServlet extends HttpServlet {
         HttpSession session = req.getSession(true);
 
         if (session.getAttribute("session-id") == null) {
-            session.setAttribute("session-id", 99);
+            session.setAttribute("session-id", 4);
         }
-        if (session.getAttribute("showingUserId") == null) {
-            session.setAttribute("showingUserId", 1);
+        if (session.getAttribute("showing-user-index") == null) {
+            session.setAttribute("showing-user-index", 1);
         }
         try {
-            User userById = usersService.findById(Converting.convertToLong(session.getAttribute("showingUserId")));
-            if (usersService.findAll().indexOf(userById) == usersService.findAll().size() - 1) {
+            if ((Integer) session.getAttribute("showing-user-index") == usersService.findUnLikedUsers(4L).size()) {
                 resp.sendRedirect("/liked");
             }
         } catch (AccountNotFoundException e) {
@@ -74,9 +65,9 @@ public class UsersServlet extends HttpServlet {
 
 
         try {
-            User userById = usersService.findById(Converting.convertToLong(session.getAttribute("showingUserId")));
+            User showingUser = usersService.findUnLikedUsers(4L).get((Integer) session.getAttribute("showing-user-index"));
             Map<String, Object> params = Map.of(
-                    "user", userById
+                    "user", showingUser
             );
 
             templateEngine.render("like-page.ftl", params, resp);

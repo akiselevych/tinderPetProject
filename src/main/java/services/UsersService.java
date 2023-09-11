@@ -9,10 +9,11 @@ import java.util.Optional;
 
 public interface UsersService {
     List<User> findAll();
-    User findById(Long id) throws AccountNotFoundException;
-    List<User> findAllLikedUsers(int sessionId);
+    List<User> findUnLikedUsers(int sessionUserid) throws AccountNotFoundException;
+    User findById(int id) throws AccountNotFoundException;
+    List<User> findAllLikedUsers(int sessionUserid);
 
     SessionUser getSessionUser(int sessionId) throws AccountNotFoundException;
 
-    void addLikedProfileToLikedUserList(int sessionId, User user);
+    void addLikedProfileToLikedUserList(int sessionUserId, User user);
 }
