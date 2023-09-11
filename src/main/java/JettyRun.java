@@ -1,14 +1,11 @@
 import controller.*;
 import dao.JdbcUsersDao;
-import dao.LocalMemoUsersDao;
 import dao.UsersDao;
-import io.github.cdimascio.dotenv.Dotenv;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import services.JdbcUsersService;
-import services.LocalMemoUsersService;
 import services.UsersService;
 
 /**

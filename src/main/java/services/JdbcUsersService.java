@@ -24,7 +24,7 @@ public class JdbcUsersService implements UsersService{
     public List<User> findUnLikedUsers(int sessionUserid) throws AccountNotFoundException {
         List<User> allUsers = findAll();
         List<User> likedUsers = findAllLikedUsers(sessionUserid);
-        Optional<User> sessionUser = allUsers.stream().filter(u -> u instanceof SessionUser).findAny();
+        Optional<User> sessionUser = allUsers.stream().filter(u -> u.getId() == sessionUserid).findAny();
         if (sessionUser.isPresent()) {
             allUsers.remove(sessionUser.get());
             allUsers.removeAll(likedUsers);

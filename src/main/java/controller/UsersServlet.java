@@ -30,13 +30,13 @@ public class UsersServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession(false);
-        Long showingUserId = Converting.convertToLong(session.getAttribute("showingUserId"));
+        int showingUserIndex= (Integer) session.getAttribute("showing-user-index");
         try {
-            User showingUser = usersService.findById(showingUserId);
+            User showingUser = usersService.findUnLikedUsers(4).get(showingUserIndex);
             if (req.getParameter("option").equals("like")) {
-                usersService.addLikedProfileToLikedUserList(4L, showingUser);
+                usersService.addLikedProfileToLikedUserList(4, showingUser);
             }
-            session.setAttribute("showingUserId", showingUserId + 1);
+            session.setAttribute("showing-user-index", showingUserIndex + 1);
             resp.sendRedirect("/users");
         } catch (AccountNotFoundException e) {
             e.printStackTrace();
@@ -53,10 +53,10 @@ public class UsersServlet extends HttpServlet {
             session.setAttribute("session-id", 4);
         }
         if (session.getAttribute("showing-user-index") == null) {
-            session.setAttribute("showing-user-index", 1);
+            session.setAttribute("showing-user-index", 0);
         }
         try {
-            if ((Integer) session.getAttribute("showing-user-index") == usersService.findUnLikedUsers(4L).size()) {
+            if ((Integer) session.getAttribute("showing-user-index") == usersService.findUnLikedUsers(4).size() - 1) {
                 resp.sendRedirect("/liked");
             }
         } catch (AccountNotFoundException e) {
@@ -65,7 +65,7 @@ public class UsersServlet extends HttpServlet {
 
 
         try {
-            User showingUser = usersService.findUnLikedUsers(4L).get((Integer) session.getAttribute("showing-user-index"));
+            User showingUser = usersService.findUnLikedUsers(4).get((Integer) session.getAttribute("showing-user-index"));
             Map<String, Object> params = Map.of(
                     "user", showingUser
             );

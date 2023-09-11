@@ -108,6 +108,7 @@ public class JdbcUsersDao implements UsersDao{
                     """);
             ps.setInt(1, user.getId());
             ps.setInt(2, sessionUserId);
+            ps.execute();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
