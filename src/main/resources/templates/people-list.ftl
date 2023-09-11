@@ -40,6 +40,9 @@
                                     <td class="align-middle">
                                         ${user.name}
                                     </td>
+                                    <td>
+
+                                    </td>
                                 </tr>
                             </#list>
                             </tbody>

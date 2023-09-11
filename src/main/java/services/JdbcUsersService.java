@@ -6,7 +6,9 @@ import models.User;
 
 import javax.security.auth.login.AccountNotFoundException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class JdbcUsersService implements UsersService{
     private UsersDao usersDao;
@@ -28,7 +30,7 @@ public class JdbcUsersService implements UsersService{
         if (sessionUser.isPresent()) {
             allUsers.remove(sessionUser.get());
             allUsers.removeAll(likedUsers);
-            return allUsers;
+            return allUsers.stream().filter(u -> !Objects.equals(u.getGender(), sessionUser.get().getGender())).toList();
         } else {
             throw new AccountNotFoundException("Session not found");
         }

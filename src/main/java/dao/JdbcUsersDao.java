@@ -79,9 +79,11 @@ public class JdbcUsersDao implements UsersDao{
     public SessionUser getSessionUser(int sessionId) throws AccountNotFoundException {
         try(Connection connection = getConnection()) {
             PreparedStatement ps = connection.prepareStatement("""
-                    SELECT u.id, u.name, u.avatar_url, u.gender
-                    FROM users u, sessions s
-                    WHERE u.id = s.user_id AND s.id = ?
+                    SELECT u.id, u.name, u.avatar_url, u.gender, c.id, c.messages_id, c.participants_id
+                    FROM users u
+                    INNER JOIN sessions s ON u.id = s.user_id
+                    LEFT JOIN chats c ON u.id = ANY(c.participants_id)
+                    WHERE s.id = ?
                     """);
             ps.setInt(1, sessionId);
             ResultSet resultSet = ps.executeQuery();
@@ -97,6 +99,8 @@ public class JdbcUsersDao implements UsersDao{
             throw new RuntimeException(e);
         }
     }
+
+
 
     @Override
     public void addLikedProfileToLikedUserList(int sessionUserId, User user) {
