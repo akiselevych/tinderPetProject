@@ -1,6 +1,6 @@
 package controller;
 
-import Utils.Converting;
+import services.ChatsService;
 import services.UsersService;
 
 import javax.servlet.ServletException;
@@ -13,10 +13,12 @@ import java.util.Map;
 public class LikedUsersServlet extends HttpServlet {
     private  final TemplateEngine templateEngine;
     private final UsersService usersService;
+    private final ChatsService chatsService;
 
-    public LikedUsersServlet(TemplateEngine templateEngine, UsersService usersService) {
+    public LikedUsersServlet(TemplateEngine templateEngine, UsersService usersService, ChatsService chatsService) {
         this.templateEngine = templateEngine;
         this.usersService = usersService;
+        this.chatsService = chatsService;
     }
 
     @Override
@@ -27,7 +29,8 @@ public class LikedUsersServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Map<String, Object> params = Map.of(
-                "users", usersService.findAllLikedUsers((Integer) req.getSession().getAttribute("session-id"))
+                "users", usersService.findAllLikedUsers((Integer) req.getSession().getAttribute("session-id")),
+                "chats", chatsService.findAllSessionUserChats((Integer) req.getSession().getAttribute("session-user-id"))
         );
         templateEngine.render("/people-list.ftl", params,resp);
     }

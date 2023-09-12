@@ -1,12 +1,10 @@
 import controller.*;
-import dao.JdbcUsersDao;
-import dao.UsersDao;
+import dao.*;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import services.JdbcUsersService;
-import services.UsersService;
+import services.*;
 
 /**
  * Hello world!
@@ -22,13 +20,21 @@ public class JettyRun
         UsersDao usersDao = new JdbcUsersDao();
         UsersService usersService = new JdbcUsersService(usersDao);
 
+        MessagesDao messagesDao = new JdbcMessagesDao();
+        MessagesService messagesService = new JdbcMessagesService(messagesDao);
+
+        ChatsDao chatsDao = new JdbcChatsDao(messagesDao, usersDao);
+        ChatsService chatsService = new JdbcChatsService(chatsDao);
+
+
+
         ServletContextHandler handler = new ServletContextHandler();
         SessionHandler sessionHandler = new SessionHandler();
         handler.setSessionHandler(sessionHandler);
         IndexServlet indexServlet = new IndexServlet(templateEngine);
         MessagesServlet messagesServlet = new MessagesServlet(templateEngine);
-        UsersServlet usersServlet = new UsersServlet(templateEngine, usersService);
-        LikedUsersServlet likedUsersServlet = new LikedUsersServlet(templateEngine, usersService);
+        UsersServlet usersServlet = new UsersServlet(templateEngine, usersService, chatsService);
+        LikedUsersServlet likedUsersServlet = new LikedUsersServlet(templateEngine, usersService, chatsService);
 
         handler.addServlet(new ServletHolder(indexServlet), "/");
         handler.addServlet(new ServletHolder(usersServlet), "/users");

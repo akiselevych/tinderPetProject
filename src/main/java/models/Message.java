@@ -5,14 +5,14 @@ import java.util.Date;
 public class Message {
     private int id;
     private int fromUserId;
-    private int toUserId;
+    private int chatId;
     private Date sentDate;
     private String text;
 
-    public Message(int id, int fromUserId, int toUserId, Date sentDate, String text) {
+    public Message(int id, int fromUserId, int chatId, Date sentDate, String text) {
         this.id = id;
         this.fromUserId = fromUserId;
-        this.toUserId = toUserId;
+        this.chatId = chatId;
         this.sentDate = sentDate;
         this.text = text;
     }
@@ -33,12 +33,12 @@ public class Message {
         this.fromUserId = fromUserId;
     }
 
-    public int getToUserId() {
-        return toUserId;
+    public int getChatId() {
+        return chatId;
     }
 
-    public void setToUserId(int toUserId) {
-        this.toUserId = toUserId;
+    public void setChatId(int chatId) {
+        this.chatId = chatId;
     }
 
     public Date getSentDate() {

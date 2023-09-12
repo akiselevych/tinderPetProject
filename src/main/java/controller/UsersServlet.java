@@ -1,8 +1,7 @@
 package controller;
 
-import Utils.Converting;
-import models.SessionUser;
 import models.User;
+import services.ChatsService;
 import services.UsersService;
 
 import javax.security.auth.login.AccountNotFoundException;
@@ -14,18 +13,18 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 
 
 public class UsersServlet extends HttpServlet {
     private final TemplateEngine templateEngine;
     private final UsersService usersService;
+    private final ChatsService chatsService;
     private List<User> showingUsers = null;
 
-    public UsersServlet(TemplateEngine templateEngine, UsersService usersService) {
+    public UsersServlet(TemplateEngine templateEngine, UsersService usersService, ChatsService chatsService) {
         this.templateEngine = templateEngine;
         this.usersService = usersService;
+        this.chatsService = chatsService;
     }
 
 
@@ -37,6 +36,7 @@ public class UsersServlet extends HttpServlet {
             User showingUser = usersService.findUnLikedUsers(4).get(showingUserIndex);
             if (req.getParameter("option").equals("like")) {
                 usersService.addLikedProfileToLikedUserList(4, showingUser);
+                chatsService.create(4,showingUser.getId());
             }
             session.setAttribute("showing-user-index", showingUserIndex + 1);
             resp.sendRedirect("/users");
@@ -58,6 +58,7 @@ public class UsersServlet extends HttpServlet {
         }
         if ((Integer) session.getAttribute("showing-user-index") == showingUsers.size()) {
             resp.sendRedirect("/liked");
+            return;
         }
 
         User showingUser = showingUsers.get((Integer) session.getAttribute("showing-user-index"));

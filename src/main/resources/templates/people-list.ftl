@@ -41,6 +41,11 @@
                                         ${user.name}
                                     </td>
                                     <td>
+                                        <#list chats as chat>
+                                            <#if chat.participants?seq_contains(user.id)>
+                                                <a class="btn btn-primary" href="/messages/${chat.id}">Open Chat with user</a>
+                                            </#if>
+                                        </#list>
 
                                     </td>
                                 </tr>
