@@ -8,7 +8,6 @@ import javax.security.auth.login.AccountNotFoundException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class JdbcUsersService implements UsersService{
     private UsersDao usersDao;
@@ -54,5 +53,9 @@ public class JdbcUsersService implements UsersService{
     @Override
     public void addLikedProfileToLikedUserList(int sessionId, User user) {
         usersDao.addLikedProfileToLikedUserList(sessionId, user);
+    }
+    @Override
+    public User findUserByLoginPassword(String login, String password) throws AccountNotFoundException {
+        return usersDao.findUserByLoginPassword(login, password);
     }
 }

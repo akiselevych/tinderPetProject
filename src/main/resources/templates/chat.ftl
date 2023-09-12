@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="img/favicon.ico">
 
     <title>Chat</title>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css"
@@ -21,36 +20,43 @@
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-6 offset-md-3">
-            <!-- Заголовок диалога -->
             <div class="bg-primary text-white text-center p-2">
-                <h4>Chat with Polina</h4>
+                <#if user??>
+                    <h4>Chat with ${user.name}</h4>
+                </#if>
+
             </div>
-            <!-- Окно сообщений -->
             <div class="border rounded p-3 mt-2" style="height: 300px; overflow-y: scroll;">
-                <!-- Сообщение отправителя -->
-                <div class="media mb-3">
-                    <img src="http://andreeanati.com/wp-content/uploads/2020/09/Mob-Journal-Prom-2.jpg" width="50" height="50" class="mr-3 img-fluid" alt="Изображение отправителя">
-                    <div class="media-body">
-                        <h5 class="mt-0">Sender</h5>
-                        Привет! Как дела?
-                    </div>
-                </div>
-                <!-- Сообщение получателя -->
-                <div class="media mb-3">
-                    <img src="https://avatars.githubusercontent.com/u/140167030?v=4?s=400" width="50" height="50" class="mr-3 img-fluid" alt="Изображение получателя">
-                    <div class="media-body">
-                        <h5 class="mt-0">Receiver</h5>
-                        Привет! Всё хорошо, спасибо. А у тебя?
-                    </div>
-                </div>
-                <!-- Другие сообщения могут быть добавлены здесь -->
+                <#if messages??>
+                    <#list messages as message>
+                        <#if message.fromUserId == sessionUser.id>
+                            <div class="media mb-3">
+                                <img src="${sessionUser.avatarUrl}" width="50" height="50" class="mr-3 img-fluid" alt="Изображение отправителя">
+                                <div class="media-body">
+                                    <h5 class="mt-0"${sessionUser.name}</h5>
+                                    ${message.text}
+                                </div>
+                            </div>
+                        <#else>
+                            <div class="media mb-3">
+                                <img src="${user.avatarUrl}" width="50" height="50" class="mr-3 img-fluid" alt="Изображение отправителя">
+                                <div class="media-body">
+                                    <h5 class="mt-0"${user.name}</h5>
+                                    ${message.text}
+                                </div>
+                            </div>
+                        </#if>
+                    </#list>
+                </#if>
             </div>
             <!-- Поле ввода сообщения -->
             <div class="input-group mt-3">
-                <input type="text" class="form-control" placeholder="Enter your message">
-                <div class="input-group-append">
-                    <button class="btn btn-primary" type="button">Send</button>
-                </div>
+                <form action="/messages/${chat.id}" method="post">
+                    <input type="text" name="message" class="form-control" placeholder="Enter your message"/>
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit">Send</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

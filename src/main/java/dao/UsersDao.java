@@ -22,4 +22,6 @@ public interface UsersDao {
     default Connection getConnection() throws SQLException {
         return DriverManager.getConnection("jdbc:postgresql://ep-weathered-voice-67196930-pooler.eu-central-1.postgres.vercel-storage.com:5432/verceldb", "default", "2KbscPtoxDv5");
     }
+
+    User findUserByLoginPassword(String login, String password) throws AccountNotFoundException;
 }

@@ -3,7 +3,10 @@ package dao;
 import models.Message;
 
 import javax.management.InstanceNotFoundException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +23,7 @@ public class JdbcMessagesDao implements MessagesDao {
                         resultSet.getInt("id"),
                         resultSet.getInt("from_user_id"),
                         resultSet.getInt("chat_id"),
-                        resultSet.getDate("sent_date"),
+                        resultSet.getTimestamp("sent_date").toLocalDateTime(),
                         resultSet.getString("text")
                 ));
             }
@@ -41,7 +44,7 @@ public class JdbcMessagesDao implements MessagesDao {
                         resultSet.getInt("id"),
                         resultSet.getInt("from_user_id"),
                         resultSet.getInt("chat_id"),
-                        resultSet.getDate("sent_date"),
+                        resultSet.getTimestamp("sent_date").toLocalDateTime(),
                         resultSet.getString("text")
                 );
             }
@@ -56,12 +59,12 @@ public class JdbcMessagesDao implements MessagesDao {
         try (Connection connection = getConnection()) {
             PreparedStatement statement = connection.prepareStatement("""
                     INSERT INTO messages(from_user_id,sent_date,text,chat_id)
-                    VALUES(?,?,?,?)
+                    VALUES(?,NOW(),?,?)
                     """);
             statement.setInt(1, message.getFromUserId());
-            statement.setDate(2, new Date(message.getSentDate().getTime()));
-            statement.setString(3, message.getText());
-            statement.setInt(4, chatId);
+            statement.setString(2, message.getText());
+            statement.setInt(3, chatId);
+            statement.execute();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

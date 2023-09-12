@@ -117,4 +117,27 @@ public class JdbcUsersDao implements UsersDao{
             throw new RuntimeException(e);
         }
     }
+    @Override
+    public User findUserByLoginPassword(String login, String password) throws AccountNotFoundException {
+        try(Connection connection = getConnection()) {
+            PreparedStatement ps = connection.prepareStatement("""
+                    SELECT u.id, u.name, u.avatar_url, u.gender
+                    FROM users u
+                    WHERE u.login = '?' AND u.password = '?'
+                    """);
+            ps.setString(1, login);
+            ps.setString(2, password);
+            ResultSet resultSet = ps.executeQuery();
+            if (resultSet.next()) {
+                Integer userId = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                String avatarUrl = resultSet.getString("avatar_url");
+                String gender = resultSet.getString("gender");
+                return new User(userId, name, avatarUrl, gender);
+            }
+            throw new AccountNotFoundException("Incorrect login or password");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

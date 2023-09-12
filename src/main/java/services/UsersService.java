@@ -16,4 +16,6 @@ public interface UsersService {
     SessionUser getSessionUser(int sessionId) throws AccountNotFoundException;
 
     void addLikedProfileToLikedUserList(int sessionUserId, User user);
+
+    User findUserByLoginPassword(String login, String password) throws AccountNotFoundException;
 }

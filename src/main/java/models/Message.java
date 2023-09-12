@@ -1,16 +1,23 @@
 package models;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class Message {
     private int id;
     private int fromUserId;
     private int chatId;
-    private Date sentDate;
+    private LocalDateTime sentDate;
     private String text;
 
-    public Message(int id, int fromUserId, int chatId, Date sentDate, String text) {
+    public Message(int id, int fromUserId, int chatId, LocalDateTime sentDate, String text) {
         this.id = id;
+        this.fromUserId = fromUserId;
+        this.chatId = chatId;
+        this.sentDate = sentDate;
+        this.text = text;
+    }
+
+    public Message(int fromUserId, int chatId, LocalDateTime sentDate, String text) {
         this.fromUserId = fromUserId;
         this.chatId = chatId;
         this.sentDate = sentDate;
@@ -41,11 +48,11 @@ public class Message {
         this.chatId = chatId;
     }
 
-    public Date getSentDate() {
+    public LocalDateTime getSentDate() {
         return sentDate;
     }
 
-    public void setSentDate(Date sentDate) {
+    public void setSentDate(LocalDateTime sentDate) {
         this.sentDate = sentDate;
     }
 

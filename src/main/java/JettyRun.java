@@ -32,14 +32,14 @@ public class JettyRun
         SessionHandler sessionHandler = new SessionHandler();
         handler.setSessionHandler(sessionHandler);
         IndexServlet indexServlet = new IndexServlet(templateEngine);
-        MessagesServlet messagesServlet = new MessagesServlet(templateEngine);
+        MessagesServlet messagesServlet = new MessagesServlet(templateEngine, messagesService, usersService, chatsService);
         UsersServlet usersServlet = new UsersServlet(templateEngine, usersService, chatsService);
         LikedUsersServlet likedUsersServlet = new LikedUsersServlet(templateEngine, usersService, chatsService);
 
         handler.addServlet(new ServletHolder(indexServlet), "/");
         handler.addServlet(new ServletHolder(usersServlet), "/users");
         handler.addServlet(new ServletHolder(likedUsersServlet), "/liked");
-        handler.addServlet(new ServletHolder(messagesServlet), "/messages/1");
+        handler.addServlet(new ServletHolder(messagesServlet), "/messages/*");
 
         handler.addServlet(CSSBootstrapServlet.class, "/css/bootstrap.min.css");
         handler.addServlet(JsBootstrapServlet.class, "/js/bootstrap.min.css");
