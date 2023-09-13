@@ -8,7 +8,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
 
 public interface UsersDao {
     List<User> findAll();
@@ -23,5 +22,5 @@ public interface UsersDao {
         return DriverManager.getConnection("jdbc:postgresql://ep-weathered-voice-67196930-pooler.eu-central-1.postgres.vercel-storage.com:5432/verceldb", "default", "2KbscPtoxDv5");
     }
 
-    User findUserByLoginPassword(String login, String password) throws AccountNotFoundException;
+    SessionUser findUserByLoginPassword(String login, String password) throws AccountNotFoundException;
 }

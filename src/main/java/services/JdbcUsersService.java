@@ -55,7 +55,7 @@ public class JdbcUsersService implements UsersService{
         usersDao.addLikedProfileToLikedUserList(sessionId, user);
     }
     @Override
-    public User findUserByLoginPassword(String login, String password) throws AccountNotFoundException {
+    public SessionUser findUserByLoginPassword(String login, String password) throws AccountNotFoundException {
         return usersDao.findUserByLoginPassword(login, password);
     }
 }

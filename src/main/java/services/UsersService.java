@@ -5,7 +5,6 @@ import models.User;
 
 import javax.security.auth.login.AccountNotFoundException;
 import java.util.List;
-import java.util.Optional;
 
 public interface UsersService {
     List<User> findAll();
@@ -17,5 +16,5 @@ public interface UsersService {
 
     void addLikedProfileToLikedUserList(int sessionUserId, User user);
 
-    User findUserByLoginPassword(String login, String password) throws AccountNotFoundException;
+    SessionUser findUserByLoginPassword(String login, String password) throws AccountNotFoundException;
 }

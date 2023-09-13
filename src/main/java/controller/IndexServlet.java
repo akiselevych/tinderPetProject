@@ -15,7 +15,6 @@ public class IndexServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-
-        templateEngine.render("/dashboard.ftl", response);
+        templateEngine.render("dashboard.ftl", response);
     }
 }

@@ -3,13 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+          content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<a href="/users">Go to users</a>
-<br>
-<a href="/liked">Go to users which you liked</a>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <a href="/users" class="btn btn-primary">Go to users</a>
+        </div>
+        <div class="col">
+            <a href="/liked" class="btn btn-success">Go to users you liked</a>
+        </div>
+        <div class="col">
+            <a href="/logout" class="btn btn-danger">Log out</a>
+        </div>
+    </div>
+</div>
 </body>
 </html>

@@ -62,9 +62,21 @@ public class JdbcChatsDao implements ChatsDao{
     @Override
     public void create(int sessionUserId, int likedUserId) {
         try(Connection conn = getConnection()) {
-            PreparedStatement statement = conn.prepareStatement(" INSERT INTO chats (participants_id) VALUES (ARRAY[?,?]) ");
+            PreparedStatement statement = conn.prepareStatement("""
+                    INSERT INTO chats (participants_id)
+                    SELECT ARRAY[?,?]
+                    WHERE NOT EXISTS (
+                      SELECT 1
+                      FROM chats
+                      WHERE participants_id = ARRAY[?,?] OR participants_id = ARRAY[?,?]
+                    );
+                    """);
             statement.setInt(1,sessionUserId);
             statement.setInt(2,likedUserId);
+            statement.setInt(3,sessionUserId);
+            statement.setInt(4,likedUserId);
+            statement.setInt(5,likedUserId);
+            statement.setInt(6,sessionUserId);
             statement.execute();
         } catch (SQLException e) {
             throw new RuntimeException(e);

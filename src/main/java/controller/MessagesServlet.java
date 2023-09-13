@@ -32,7 +32,7 @@ public class MessagesServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String path = req.getPathInfo();
-        Integer sessionUserId = (Integer) req.getSession().getAttribute("session-user-id");
+        int sessionUserId = (int) req.getSession().getAttribute(LoginFilter.SESSION_USER_ID);
         if (path != null) {
             String[] pathParts = path.split("/");
             if (pathParts.length >= 2) {
@@ -48,7 +48,7 @@ public class MessagesServlet extends HttpServlet {
                             "messages", messages,
                             "chat",chat
                     );
-                    templateEngine.render("./chat.ftl", params,resp);
+                    templateEngine.render("chat.ftl", params,resp);
                 } catch (AccountNotFoundException e) {
                     throw new RuntimeException(e);
                 }
@@ -60,7 +60,7 @@ public class MessagesServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         int chatId = Integer.parseInt(req.getPathInfo().split("/")[1]);
-        Integer sessionUserId = (Integer) req.getSession().getAttribute("session-user-id");
+        Integer sessionUserId = (Integer) req.getSession().getAttribute(LoginFilter.SESSION_USER_ID);
         if (!req.getParameter("message").isEmpty()) {
             messagesService.sendMessage(chatId, new Message(sessionUserId, chatId, LocalDateTime.now(),req.getParameter("message")));
             resp.sendRedirect("/messages/" + chatId);

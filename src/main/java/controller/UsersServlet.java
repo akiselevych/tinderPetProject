@@ -31,37 +31,34 @@ public class UsersServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession(false);
-        int showingUserIndex = (Integer) session.getAttribute("showing-user-index");
-        try {
-            User showingUser = usersService.findUnLikedUsers(4).get(showingUserIndex);
-            if (req.getParameter("option").equals("like")) {
-                usersService.addLikedProfileToLikedUserList(4, showingUser);
-                chatsService.create(4,showingUser.getId());
-            }
-            session.setAttribute("showing-user-index", showingUserIndex + 1);
-            resp.sendRedirect("/users");
-        } catch (AccountNotFoundException e) {
-            e.printStackTrace();
+        int showingUserIndex = (int) session.getAttribute(LoginFilter.SHOWING_USER_INDEX);
+        int sessionUserId = (Integer) session.getAttribute(LoginFilter.SESSION_USER_ID);
+        User showingUser = showingUsers.get(showingUserIndex);
+        if (req.getParameter("option").equals("like")) {
+            usersService.addLikedProfileToLikedUserList(sessionUserId, showingUser);
+            chatsService.create(sessionUserId, showingUser.getId());
         }
-
+        session.setAttribute(LoginFilter.SHOWING_USER_INDEX, showingUserIndex + 1);
+        resp.sendRedirect("/users");
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession(true);
+        int showingUserIndex = (int) session.getAttribute(LoginFilter.SHOWING_USER_INDEX);
         if (showingUsers == null) {
             try {
-                showingUsers = usersService.findUnLikedUsers(4);
+                showingUsers = usersService.findUnLikedUsers((Integer) session.getAttribute(LoginFilter.SESSION_USER_ID));
             } catch (AccountNotFoundException e) {
                 throw new RuntimeException(e);
             }
         }
-        if ((Integer) session.getAttribute("showing-user-index") == showingUsers.size()) {
+        if (showingUserIndex == showingUsers.size()) {
             resp.sendRedirect("/liked");
             return;
         }
 
-        User showingUser = showingUsers.get((Integer) session.getAttribute("showing-user-index"));
+        User showingUser = showingUsers.get(showingUserIndex);
         Map<String, Object> params = Map.of(
                 "user", showingUser
         );
