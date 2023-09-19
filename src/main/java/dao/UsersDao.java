@@ -3,6 +3,7 @@ package dao;
 import models.SessionUser;
 import models.User;
 
+import javax.security.auth.login.AccountException;
 import javax.security.auth.login.AccountNotFoundException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -23,4 +24,6 @@ public interface UsersDao {
     }
 
     SessionUser findUserByLoginPassword(String login, String password) throws AccountNotFoundException;
+
+    User createNewUser(String name, String avatarUrl, String gender, String login, String password) throws AccountException;
 }

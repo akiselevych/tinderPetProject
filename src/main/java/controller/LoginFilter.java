@@ -1,6 +1,5 @@
 package controller;
 
-import Utils.CookieUtil;
 import models.SessionUser;
 import services.UsersService;
 
@@ -9,9 +8,9 @@ import javax.servlet.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.Optional;
-import java.util.Set;
+import java.util.Objects;
 
 public class LoginFilter implements Filter {
 
@@ -41,36 +40,28 @@ public class LoginFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
-        Set<String> allowedUrls = Set.of("/registration", "/css/bootstrap.min.css","/js/bootstrap.min.css" , "/dashboard");
-        if (allowedUrls.contains(req.getServletPath())) {
-            chain.doFilter(request, response);
-        }
-        Optional<Cookie> optionalCookie = CookieUtil.findCookieByName(req, SESSION_ID);
-        if (optionalCookie.isEmpty()){
-            String login = request.getParameter("login");
-            String password = request.getParameter("password");
-            if (login != null && password != null) {
-                try {
-                    SessionUser user = usersService.findUserByLoginPassword(login, password);
-                    if (user != null) {
-                        req.getSession(true);
-                        res.addCookie(new Cookie(SESSION_ID, String.valueOf(user.getSessionId())));
-                        req.getSession().setAttribute(SESSION_USER_ID, user.getId());
-                        req.getSession().setAttribute(SHOWING_USER_INDEX, 0);
-                        res.sendRedirect("/dashboard");
-                        chain.doFilter(request, response);
-                        return;
-                    }
-                    templateEngine.render("login.ftl",res);
-                } catch (AccountNotFoundException e) {
-                    templateEngine.render("login.ftl",res);
-                    e.printStackTrace();
-                }
-            }
-            templateEngine.render("login.ftl",res);
-        } else {
+        HttpSession session = req.getSession(false);
+        boolean isAsset = Objects.equals(req.getServletPath(), "/registration") || Objects.equals(req.getServletPath(), "/css/bootstrap.min.css") || Objects.equals(req.getServletPath(), "/js/bootstrap.min.css");
+        if (isAsset){
             chain.doFilter(req, res);
+            return;
         }
-
+        if (session != null) {
+            chain.doFilter(req, res);
+        } else {
+            try {
+                SessionUser user = usersService.findUserByLoginPassword(request.getParameter("login"), request.getParameter("password"));
+                session = req.getSession(true);
+                session.setMaxInactiveInterval(60_000);
+                session.setAttribute(SESSION_USER_ID, user.getId());
+                session.setAttribute(SHOWING_USER_INDEX, 0);
+                Cookie cookie = new Cookie(SESSION_ID, String.valueOf(user.getSessionId()));
+                res.addCookie(cookie);
+                chain.doFilter(req, res);
+                return;
+            } catch (AccountNotFoundException e) {
+                templateEngine.render("login.ftl",res);
+            }
+        }
     }
 }

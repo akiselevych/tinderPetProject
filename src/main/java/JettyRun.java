@@ -36,20 +36,22 @@ public class JettyRun
         SessionHandler sessionHandler = new SessionHandler();
         handler.setSessionHandler(sessionHandler);
 
-        IndexServlet indexServlet = new IndexServlet(templateEngine);
+        IndexServlet indexServlet = new IndexServlet(templateEngine, usersService);
         MessagesServlet messagesServlet = new MessagesServlet(templateEngine, messagesService, usersService, chatsService);
         UsersServlet usersServlet = new UsersServlet(templateEngine, usersService, chatsService);
         LikedUsersServlet likedUsersServlet = new LikedUsersServlet(templateEngine, usersService, chatsService);
         LoginServlet loginServlet = new LoginServlet(templateEngine);
         LogOutServlet logOutServlet = new LogOutServlet(templateEngine);
+        RegistrationServlet registrationServlet = new RegistrationServlet(templateEngine, usersService);
 
         LoginFilter loginFilter = new LoginFilter(templateEngine, usersService);
 
-        handler.addServlet(new ServletHolder(indexServlet), "/dashboard");
+        handler.addServlet(new ServletHolder(indexServlet), "/");
         handler.addServlet(new ServletHolder(usersServlet), "/users");
         handler.addServlet(new ServletHolder(likedUsersServlet), "/liked");
-        handler.addServlet(new ServletHolder(loginServlet), "/");
+        handler.addServlet(new ServletHolder(loginServlet), "/login");
         handler.addServlet(new ServletHolder(logOutServlet), "/logout");
+        handler.addServlet(new ServletHolder(registrationServlet), "/registration");
         handler.addServlet(new ServletHolder(messagesServlet), "/messages/*");
 
         handler.addFilter(new FilterHolder(loginFilter), "/*", EnumSet.of(DispatcherType.REQUEST));

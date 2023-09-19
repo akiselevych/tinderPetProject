@@ -60,6 +60,9 @@
             </div>
         </div>
     </div>
+    <div class="col mt-5">
+        <a href="/" class="btn btn-primary">Go to dashboard</a>
+    </div>
 </div>
 
 </body>

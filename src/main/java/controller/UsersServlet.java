@@ -19,7 +19,6 @@ public class UsersServlet extends HttpServlet {
     private final TemplateEngine templateEngine;
     private final UsersService usersService;
     private final ChatsService chatsService;
-    private List<User> showingUsers = null;
 
     public UsersServlet(TemplateEngine templateEngine, UsersService usersService, ChatsService chatsService) {
         this.templateEngine = templateEngine;
@@ -33,37 +32,43 @@ public class UsersServlet extends HttpServlet {
         HttpSession session = req.getSession(false);
         int showingUserIndex = (int) session.getAttribute(LoginFilter.SHOWING_USER_INDEX);
         int sessionUserId = (Integer) session.getAttribute(LoginFilter.SESSION_USER_ID);
-        User showingUser = showingUsers.get(showingUserIndex);
-        if (req.getParameter("option").equals("like")) {
-            usersService.addLikedProfileToLikedUserList(sessionUserId, showingUser);
-            chatsService.create(sessionUserId, showingUser.getId());
+        try {
+            List<User> showingUsers = usersService.findUnLikedUsers((Integer) session.getAttribute(LoginFilter.SESSION_USER_ID));
+            User showingUser = showingUsers.get(0);
+            if (req.getParameter("option").equals("like")) {
+                usersService.addLikedProfileToLikedUserList(sessionUserId, showingUser);
+                chatsService.create(sessionUserId, showingUser.getId());
+            } else {
+                session.setAttribute(LoginFilter.SHOWING_USER_INDEX, showingUserIndex + 1);
+            }
+            resp.sendRedirect("/users");
+        } catch (AccountNotFoundException e) {
+            resp.sendRedirect("/");
+            e.printStackTrace();
         }
-        session.setAttribute(LoginFilter.SHOWING_USER_INDEX, showingUserIndex + 1);
-        resp.sendRedirect("/users");
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession(true);
         int showingUserIndex = (int) session.getAttribute(LoginFilter.SHOWING_USER_INDEX);
-        if (showingUsers == null) {
-            try {
-                showingUsers = usersService.findUnLikedUsers((Integer) session.getAttribute(LoginFilter.SESSION_USER_ID));
-            } catch (AccountNotFoundException e) {
-                throw new RuntimeException(e);
+        try {
+            List<User> showingUsers = usersService.findUnLikedUsers((Integer) session.getAttribute(LoginFilter.SESSION_USER_ID));
+            if (showingUserIndex == showingUsers.size() || showingUsers.isEmpty()) {
+                session.setAttribute(LoginFilter.SHOWING_USER_INDEX, 0);
+                resp.sendRedirect("/liked");
+                return;
             }
-        }
-        if (showingUserIndex == showingUsers.size()) {
-            resp.sendRedirect("/liked");
-            return;
-        }
+            User showingUser = showingUsers.get(showingUserIndex);
+            Map<String, Object> params = Map.of(
+                    "user", showingUser
+            );
 
-        User showingUser = showingUsers.get(showingUserIndex);
-        Map<String, Object> params = Map.of(
-                "user", showingUser
-        );
-
-        templateEngine.render("like-page.ftl", params, resp);
+            templateEngine.render("like-page.ftl", params, resp);
+        } catch (AccountNotFoundException e) {
+            resp.sendRedirect("/");
+            e.printStackTrace();
+        }
     }
 }
 

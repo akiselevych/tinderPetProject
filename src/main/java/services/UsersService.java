@@ -3,6 +3,7 @@ package services;
 import models.SessionUser;
 import models.User;
 
+import javax.security.auth.login.AccountException;
 import javax.security.auth.login.AccountNotFoundException;
 import java.util.List;
 
@@ -17,4 +18,5 @@ public interface UsersService {
     void addLikedProfileToLikedUserList(int sessionUserId, User user);
 
     SessionUser findUserByLoginPassword(String login, String password) throws AccountNotFoundException;
+    User createNewUser(String name, String avatarUrl, String gender, String login, String password) throws AccountException;
 }

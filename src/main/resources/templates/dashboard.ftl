@@ -7,11 +7,16 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
 
-    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<div class="container">
+<div class="container pt-5">
     <div class="row">
+        <#if sessionUserName??>
+            <div class="col">
+                <h3>Current User : ${sessionUserName}</h3>
+            </div>
+        </#if>
         <div class="col">
             <a href="/users" class="btn btn-primary">Go to users</a>
         </div>

@@ -4,6 +4,7 @@ import dao.UsersDao;
 import models.SessionUser;
 import models.User;
 
+import javax.security.auth.login.AccountException;
 import javax.security.auth.login.AccountNotFoundException;
 import java.util.List;
 import java.util.Objects;
@@ -57,5 +58,10 @@ public class JdbcUsersService implements UsersService{
     @Override
     public SessionUser findUserByLoginPassword(String login, String password) throws AccountNotFoundException {
         return usersDao.findUserByLoginPassword(login, password);
+    }
+
+    @Override
+    public User createNewUser(String name, String avatarUrl, String gender, String login, String password) throws AccountException {
+        return usersDao.createNewUser(name, avatarUrl, gender, login, password);
     }
 }

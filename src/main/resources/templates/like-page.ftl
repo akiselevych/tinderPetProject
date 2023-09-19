@@ -9,10 +9,10 @@
     <title>Like page</title>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
     <!-- Bootstrap core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body style="background-color: #f5f5f5;">
 
@@ -42,5 +42,8 @@
         </div>
     </form>
 </#if>
+<div class="col mt-5">
+    <a href="/" class="btn btn-primary">Go to dashboard</a>
+</div>
 </body>
 </html>
