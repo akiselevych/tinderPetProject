@@ -1,5 +1,7 @@
 package step.models;
 
+import java.util.Objects;
+
 public class User {
     private Integer id;
     private String name;
@@ -49,7 +51,7 @@ public class User {
 
     @Override
     public int hashCode() {
-        return id.hashCode();
+        return Objects.hashCode(id);
     }
 
     public String getGender() {
